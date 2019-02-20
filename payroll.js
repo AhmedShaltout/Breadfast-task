@@ -29,7 +29,7 @@ rL.question("What year are we generating payroll for? ", answer => {
         if (answer < 1) throw new Error("Not a valid year")
         let salaryDate = new Date(answer)
         let fileName = salaryDate.getFullYear().toString().concat('_payroll.csv')
-        appendToFile(fileName, "Date,Name,Salary,Bonus,Notes", false)
+        appendToFile(fileName, "Date,Name,Salary,Salary_Date,Bonus,Bonus_Date,Notes", false)
         for (let month = 0, monthsCount = MONTHS.length; month < monthsCount; month++) {
             let note
             salaryDate.setMonth(month + 1, 0)
@@ -50,10 +50,10 @@ rL.question("What year are we generating payroll for? ", answer => {
                 let bonusNote = getNote(shouldDate, bonusDate, false)
                 note = note ? note.concat(" // ", bonusNote) : bonusNote
             }
-            appendToFile(fileName, "\n".concat(MONTHS[salaryDate.getMonth()], salaryDate.getFullYear(), note ? ",,,,".concat(note) : ""))
+            appendToFile(fileName, "\n".concat(MONTHS[salaryDate.getMonth()], salaryDate.getFullYear(), note ? ",,,,,,".concat(note) : ""))
             for (let employeeIndex = 0, employeesLength = EMPLOYEES.length; employeeIndex < employeesLength; employeeIndex++) {
                 let employee = EMPLOYEES[employeeIndex]
-                appendToFile(fileName, "\n,".concat(employee.name, ',', employee.salary, ',', employee.bonus))
+                appendToFile(fileName, "\n,".concat(employee.name, ',', employee.salary, ',', salaryDate.toLocaleDateString(), ',', employee.bonus, ',', bonusDate.toLocaleDateString()))
             }
         }
         console.log("Done generating in (", new Date().getTime() - startedAT.getTime(), 'MS) for (', EMPLOYEES.length, ') employee')
